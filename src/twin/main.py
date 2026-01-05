@@ -1,25 +1,39 @@
 from twin.crew import build_twin_crew
 
-# CrewAI will call this
+
 def run():
     print("🧠 Digital Twin Crew Started")
 
-    # CrewAI passes inputs here
-    company = input("Enter company name: ")
+    companies_input = input("Enter competitor names (comma separated): ")
 
-    crew = build_twin_crew(company)
-    result = crew.kickoff()
+    companies = [c.strip() for c in companies_input.split(",") if c.strip()]
 
-    print("\n================ DIGITAL TWIN OUTPUT ================\n")
-    print(result)
+    all_results = {}
+
+    for company in companies:
+        print(f"\n🚀 Running Digital Twin for: {company}")
+        crew = build_twin_crew(company)
+        result = crew.kickoff()
+        all_results[company] = result
+
+    print("\n================ MULTI-COMPANY DIGITAL TWIN OUTPUT ================\n")
+
+    for company, result in all_results.items():
+        print(f"\n{'='*50}")
+        print(f"🏢 {company.upper()} DIGITAL TWIN")
+        print(f"{'='*50}\n")
+        print(result)
 
 
-# Allows python src/twin/main.py Samsung
+# Allows: python src/twin/main.py Samsung Apple Xiaomi
 if __name__ == "__main__":
     import sys
+
     if len(sys.argv) > 1:
-        company = sys.argv[1]
-        crew = build_twin_crew(company)
-        print(crew.kickoff())
+        companies = sys.argv[1:]
+        for company in companies:
+            print(f"\n🚀 Running Digital Twin for: {company}")
+            crew = build_twin_crew(company)
+            print(crew.kickoff())
     else:
         run()
